@@ -22,7 +22,7 @@ jobs:
       id: upload
       run: |
         ls
-        run: echo "::set-output name=url-file::$(curl --upload-file ./README.md https://transfer.sh/dist.zip)"
+        
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
