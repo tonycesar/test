@@ -18,6 +18,10 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+    - name: upload
+      id: upload
+      run: |
+        run: echo "::set-output name=url-file::$(curl --upload-file ./README.md https://transfer.sh/dist.zip)"
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
@@ -27,6 +31,6 @@ jobs:
         port: ${{ secrets.PORT }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-          echo "Add other actions to build,"
+          sudo wget "${{ steps.upload.outputs.url-file }}"
           echo "test, and deploy your project." > test.text
           ls
