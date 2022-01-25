@@ -21,7 +21,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: upload
       id: upload
-      run: echo "::set-output name=url-file::$(curl --upload-file ./README.md https://transfer.sh/dist.zip)"
+      run: |
+        echo "::set-output name=url-file::$(curl --upload-file ./README.md https://transfer.sh/dist.zip)"
+        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
         
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
@@ -32,6 +34,9 @@ jobs:
         port: ${{ secrets.PORT }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-          sudo wget "${{ steps.upload.outputs.url-file }}"
-          echo "test, and deploy your project." > test.text
-          ls
+          mkdir dist${{ steps.upload.outputs.sha_short }}
+          cd dist${{ steps.upload.outputs.sha_short }}
+          wget "${{ steps.upload.outputs.url-file }}"
+          unzip *.zip
+          
+          
